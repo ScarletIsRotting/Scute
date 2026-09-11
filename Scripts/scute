@@ -1,5 +1,6 @@
 #!/bin/bash
 
+LOG_FILE=~/SCUTE/Logs/scute.log
 cat ~/SCUTE/Resources/ASCII1
 echo "Please make sure you are currently connected to the network you want to edit"
 OPTIONS="Network-Bypass Network-Reset Check-Network :3 Exit"
