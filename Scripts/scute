@@ -1,0 +1,39 @@
+#!/bin/bash
+
+cat ~/SCUTE/Resources/ASCII1
+echo "Please make sure you are currently connected to the network you want to edit"
+OPTIONS="Network-Bypass Network-Reset Check-Network :3 Exit"
+select opt in $OPTIONS; do
+	if [ "$opt" = "Network-Bypass" ]; then
+		echo "Processing..."
+		netname=$(nmcli -t -f active,ssid dev wifi | awk -F: '$1 == "yes" {print $2}')
+		nmcli connection modify "$netname" ipv4.dns "1.1.1.2"
+		nmcli connection modify "$netname" ipv6.dns "2606:4700:4700::1112"
+		nmcli radio wifi off
+		sleep 2
+		nmcli radio wifi on
+		echo "Done!"
+	elif [ "$opt" = "Network-Reset" ]; then
+		echo "Processing..."
+		netname=$(nmcli -t -f active,ssid dev wifi | awk -F: '$1 == "yes" {print $2}')
+		nmcli connection modify "$netname" ipv4.dns ""
+		nmcli connection modify "$netname" ipv6.dns ""
+		nmcli radio wifi off
+		sleep 2
+		nmcli radio wifi on
+		echo "Done!"
+	elif [ "$opt" = "Exit" ]; then
+		exit
+	elif [ "$opt" = "Check-Network" ]; then
+		netname=$(nmcli -t -f active,ssid dev wifi | awk -F: '$1 == "yes" {print $2}')
+		echo "Your network name is $netname"
+	elif [ "$opt" = ":3" ]; then
+		cat ~/SCUTE/Resources/gay
+		echo "That's gay"
+		echo "..."
+		sleep 2
+		echo "/pos"
+	else
+		echo "Invalid"
+	fi
+done
