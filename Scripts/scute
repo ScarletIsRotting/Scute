@@ -7,12 +7,21 @@ OPTIONS="Network-Bypass Network-Reset Check-Network :3 Exit"
 select opt in $OPTIONS; do
 	if [ "$opt" = "Network-Bypass" ]; then
 		echo "Processing..."
+		echo "[$(date '+%Y-%m-%d %H:%M:%S')] Network-Bypass started" >> "$LOG_FILE"
 		netname=$(nmcli -t -f active,ssid dev wifi | awk -F: '$1 == "yes" {print $2}')
 		nmcli connection modify "$netname" ipv4.dns "1.1.1.2"
 		nmcli connection modify "$netname" ipv6.dns "2606:4700:4700::1112"
 		nmcli radio wifi off
 		sleep 2
 		nmcli radio wifi on
+		if [ $? -ne 0 ]; then
+    		log "ERROR: Failed to get network name. Is NetworkManager running?"
+    		exit 1
+		fi
+		if [ -z "$netname" ]; then
+    		log "ERROR: No active WiFi connection found"
+    		exit 1
+		fi
 		echo "Done!"
 	elif [ "$opt" = "Network-Reset" ]; then
 		echo "Processing..."
@@ -23,6 +32,14 @@ select opt in $OPTIONS; do
 		sleep 2
 		nmcli radio wifi on
 		echo "Done!"
+		if [ $? -ne 0 ]; then
+    		log "ERROR: Failed to get network name. Is NetworkManager running?"
+    		exit 1
+		fi
+		if [ -z "$netname" ]; then
+    		log "ERROR: No active WiFi connection found"
+    		exit 1
+		fi
 	elif [ "$opt" = "Exit" ]; then
 		exit
 	elif [ "$opt" = "Check-Network" ]; then
