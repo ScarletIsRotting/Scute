@@ -6,6 +6,7 @@ echo "Please make sure you are currently connected to the network you want to ed
 OPTIONS="Network-Bypass Network-Reset Check-Network :3 Exit"
 select opt in $OPTIONS; do
 	if [ "$opt" = "Network-Bypass" ]; then
+		clear
 		echo "Processing..."
 		echo "[$(date '+%Y-%m-%d %H:%M:%S')] Network-Bypass started" >> "$LOG_FILE"
 		netname=$(nmcli -t -f active,ssid dev wifi | awk -F: '$1 == "yes" {print $2}')
@@ -24,6 +25,7 @@ select opt in $OPTIONS; do
 		fi
 		echo "Done!"
 	elif [ "$opt" = "Network-Reset" ]; then
+		clear
 		echo "Processing..."
 		netname=$(nmcli -t -f active,ssid dev wifi | awk -F: '$1 == "yes" {print $2}')
 		nmcli connection modify "$netname" ipv4.dns ""
@@ -41,11 +43,14 @@ select opt in $OPTIONS; do
     		exit 1
 		fi
 	elif [ "$opt" = "Exit" ]; then
+		clear
 		exit
 	elif [ "$opt" = "Check-Network" ]; then
+		clear
 		netname=$(nmcli -t -f active,ssid dev wifi | awk -F: '$1 == "yes" {print $2}')
 		echo "Your network name is $netname"
 	elif [ "$opt" = ":3" ]; then
+		clear
 		cat ~/SCUTE/Resources/gay
 		echo "That's gay"
 		echo "..."
